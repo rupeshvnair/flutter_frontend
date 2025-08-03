@@ -15,3 +15,63 @@ class JewelryApp extends StatelessWidget {
         );
     }
 }
+
+class JewelryItem {
+    final String name;
+    final String imageUrl;
+    final String price;
+
+    JewelryItem({required this.name, required this.imageUrl, required this.price});
+    factory JewelryItem.fromJson(Map<String, dynamic> json) {
+        return JewelryItem(
+            name: json['name'],
+            imageUrl: json['image_url'],
+            price: json['price'],
+        );
+    }
+}
+
+class JewelryList extends StatefulWidget {
+    @override
+    _JewelryListState createState() => _JewelryListState();
+}
+
+class _JewelryListState extends State<JewelryList> {
+    List <JewelryItem> items = [];
+
+    @override
+    void initState() {
+        super.initState();
+        fetchJewelry();
+    }
+
+    Future<void> fetchJewelry() async {
+        final response = await http.get(Uri.parse('http://192.168.29.126:8000/api/jewelry'));
+        if (response.statusCode == 200) {
+            List jsonData = json.decode(response.body);
+            setState (() {
+                items = jsonData.map((e) => JewelryItem.fromJson(e)).toList();
+            });
+        } else {
+            throw Exception('Failed to load Jewelry');
+        }
+    }
+
+    @override
+    Widget build(BuildContext context) {
+        return Scaffold(
+            appBar: AppBar(title: Text('Jewelry Collection')),
+            body: ListView.builder(
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                    final item = items[index];
+                    return ListTile(
+                        leading: Image.network(item.imageUrl),
+                        title: Text(item.name),
+                        subtitle: Text("Rs${item.price}"),
+                    );
+                },
+            ),
+        );
+    }
+}
