@@ -18,15 +18,15 @@ class JewelryApp extends StatelessWidget {
 
 class JewelryItem {
     final String name;
-    final String imageUrl;
     final String price;
+    final List<dynamic> images;
 
-    JewelryItem({required this.name, required this.imageUrl, required this.price});
+    JewelryItem({required this.name, required this.price, required this.images});
     factory JewelryItem.fromJson(Map<String, dynamic> json) {
         return JewelryItem(
             name: json['name'],
-            imageUrl: json['image_url'],
             price: json['price'],
+            images: json['images'] ?? [],
         );
     }
 }
@@ -58,16 +58,15 @@ class _JewelryListState extends State<JewelryList> {
     }
 
     @override
-    Widget build(BuildContext context) {
+    Widget build(BuildContext context) {  
         return Scaffold(
             appBar: AppBar(title: Text('Jewelry Collection')),
             body: ListView.builder(
                 itemCount: items.length,
                 itemBuilder: (context, index) {
                     final item = items[index];
-                    print("Image url is ${item.imageUrl}");
                     return ListTile(
-                        leading: Image.network(item.imageUrl),
+                        leading: Image.network(item.images[0]['image']),
                         title: Text(item.name),
                         subtitle: Text("Rs${item.price}"),
                     );
