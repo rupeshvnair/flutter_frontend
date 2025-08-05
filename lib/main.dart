@@ -65,6 +65,7 @@ class _JewelryListState extends State<JewelryList> {
                 itemCount: items.length,
                 itemBuilder: (context, index) {
                     final item = items[index];
+                    print("Image url is ${item.imageUrl}");
                     return ListTile(
                         leading: Image.network(item.imageUrl),
                         title: Text(item.name),
